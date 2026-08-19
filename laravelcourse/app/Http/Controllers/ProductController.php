@@ -7,26 +7,12 @@ namespace App\Http\Controllers;
  
 
 use Illuminate\Http\Request; 
-
 use Illuminate\View\View; 
-
- 
+use App\Models\Product; 
 
 class ProductController extends Controller 
 
 { 
-
-    public static $products = [ 
-
-        ["id"=>"1", "name"=>"TV", "description"=>"Best TV"], 
-
-        ["id"=>"2", "name"=>"iPhone", "description"=>"Best iPhone"], 
-
-        ["id"=>"3", "name"=>"Chromecast", "description"=>"Best Chromecast"], 
-
-        ["id"=>"4", "name"=>"Glasses", "description"=>"Best Glasses"] 
-
-    ]; 
 
  
 
@@ -40,10 +26,9 @@ class ProductController extends Controller
 
         $viewData["subtitle"] =  "List of products"; 
 
-        $viewData["products"] = ProductController::$products; 
+        $viewData["products"] = Product::all(); 
 
         return view('product.index')->with("viewData", $viewData); 
-
     } 
 
  
@@ -54,7 +39,7 @@ class ProductController extends Controller
 
         $viewData = []; 
 
-        $product = ProductController::$products[$id-1]; 
+        $product = Product::findOrFail($id); 
 
         $viewData["title"] = $product["name"]." - Online Store"; 
 
@@ -94,9 +79,11 @@ class ProductController extends Controller
 
         ]); 
 
-        dd($request->all()); 
+        Product::create($request->only(["name","price"])); 
 
-        //here will be the code to call the model and save it to the database 
+ 
+
+        return back(); 
 
     } 
 
