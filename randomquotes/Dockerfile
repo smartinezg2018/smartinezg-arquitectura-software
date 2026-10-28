@@ -1,17 +1,7 @@
-FROM node:24-alpine 
-
- 
-
-WORKDIR /usr/src/app 
-
-COPY package*.json ./ 
-
-RUN npm install 
-
-COPY . . 
-
- 
-
-EXPOSE 8080 
-
-CMD [ "node", "index.js" ] 
+FROM node:22-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY . .
+EXPOSE 80
+CMD ["node", "index.js"]
