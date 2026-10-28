@@ -24,7 +24,7 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: randomquotes
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:latest .
+          docker build -t $REGISTRY/$REPOSITORY:latest ./randomquotes
           docker push $REGISTRY/$REPOSITORY:latest
       - name: Update ECS service
         run: |
