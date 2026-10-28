@@ -1,99 +1,88 @@
-<?php 
+<?php
 
- 
 
-namespace App\Http\Controllers; 
 
- 
+namespace App\Http\Controllers;
 
-use Illuminate\Http\RedirectResponse; 
-use Illuminate\Http\Request; 
-use Illuminate\View\View; 
 
- 
 
-class CartController extends Controller 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
-{ 
 
-    public function index(Request $request): View 
 
-    { 
+class CartController extends Controller
+
+{
+
+    public function index(Request $request): View
+
+    {
 
         $products = []; //this simulates the database 
 
-        $products[121] = ['name' => 'Tv samsung', 'price' => '1000']; 
+        $products[121] = ['name' => 'Tv samsung', 'price' => '1000'];
 
-        $products[11] = ['name' => 'Iphone', 'price' => '2000']; 
+        $products[11] = ['name' => 'Iphone', 'price' => '2000'];
 
- 
 
-        $cartProducts = []; 
+
+        $cartProducts = [];
 
         $cartProductData = $request->session()->get('cart_product_data'); //we get the products stored in session 
 
-        if ($cartProductData) { 
+        if ($cartProductData) {
 
-            foreach (array_keys($cartProductData) as $key) { 
+            foreach (array_keys($cartProductData) as $key) {
 
-                if (isset($products[$key])) { 
+                if (isset($products[$key])) {
 
-                    $cartProducts[$key] = $products[$key]; 
+                    $cartProducts[$key] = $products[$key];
+                }
+            }
+        }
 
-                } 
 
-            } 
 
-        } 
+        $viewData = [];
 
- 
+        $viewData['title'] = 'Cart - Online Store';
 
-        $viewData = []; 
+        $viewData['subtitle'] = 'Shopping Cart';
 
-        $viewData['title'] = 'Cart - Online Store'; 
+        $viewData['products'] = $products;
 
-        $viewData['subtitle'] = 'Shopping Cart'; 
+        $viewData['cartProducts'] = $cartProducts;
 
-        $viewData['products'] = $products; 
 
-        $viewData['cartProducts'] = $cartProducts; 
 
- 
+        return view('cart.index')->with('viewData', $viewData);
+    }
 
-        return view('cart.index')->with('viewData', $viewData); 
+    public function add(string $id, Request $request): RedirectResponse
 
-    } 
+    {
 
- 
+        $cartProductData = $request->session()->get('cart_product_data');
+        $cartProductData[$id] = $id;
 
-    public function add(string $id, Request $request): RedirectResponse 
+        $request->session()->put('cart_product_data', $cartProductData);
 
-    { 
 
-        $cartProductData = $request->session()->get('cart_product_data'); 
 
-        $cartProductData[$id] = $id; 
+        return back();
+    }
 
-        $request->session()->put('cart_product_data', $cartProductData); 
 
- 
 
-        return back(); 
+    public function removeAll(Request $request): RedirectResponse
 
-    } 
+    {
+        $request->session()->forget('cart_product_data');
 
- 
 
-    public function removeAll(Request $request): RedirectResponse 
 
-    { 
-
-        $request->session()->forget('cart_product_data'); 
-
- 
-
-        return back(); 
-
-    } 
-
-} 
+        return back();
+    }
+}
